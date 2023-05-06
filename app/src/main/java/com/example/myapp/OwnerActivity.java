@@ -29,7 +29,11 @@ public class OwnerActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
+<<<<<<< HEAD
         foodReference = database.getReference("food").child(userId);
+=======
+        foodReference = database.getReference("restaurants").child(userId);
+>>>>>>> f67e84a (after meeting 08.05.23)
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner);
