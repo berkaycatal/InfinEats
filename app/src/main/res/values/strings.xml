@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">InfinEats</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="add_food">Add Food</string>
+    <string name="edit">Edit</string>
+
+
+</resources>
