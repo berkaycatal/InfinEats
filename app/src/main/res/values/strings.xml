@@ -5,6 +5,6 @@
     <string name="delete">Delete</string>
     <string name="add_food">Add Food</string>
     <string name="edit">Edit</string>
-
+    <string name="log_out">Log Out</string>
 
 </resources>

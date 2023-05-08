@@ -1,65 +1,101 @@
 package com.example.myapp;
+
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import androidx.appcompat.app.AlertDialog;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 public class MainActivity extends AppCompatActivity {
-    private FoodItemAdapter foodAdapter;
-    private DatabaseReference foodReference;
+    private FirebaseAuth auth;
 
-    @Override
+    private DatabaseReference reference;
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        foodReference = database.getReference("food").child("berkay");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ListView listView = findViewById(R.id.list_view);
-
-        foodAdapter = new FoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
-        listView.setAdapter(foodAdapter);
-        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
+        auth = FirebaseAuth.getInstance();
+        reference = FirebaseDatabase.getInstance().getReference("users");
+        if(auth.getCurrentUser() != null){
+            onAuthSuccessful();
+        }
+        ;
+        findViewById(R.id.customer_sign_up_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddFoodDialog();
+                onSignUpButtonClicked(UserType.Customer);
+            }
+        });
+
+        findViewById(R.id.owner_sign_up_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSignUpButtonClicked(UserType.Owner);
+
+            }
+        });
+        EditText email = findViewById(R.id.email_edit_text);
+        EditText password = findViewById(R.id.password_edit_text);
+
+        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSignInButtonClicked(email.getText().toString(),password.getText().toString());
+            }
+
+        });
+
+
+    }
+    private void onSignUpButtonClicked(UserType type){
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.putExtra("userType", type);
+        startActivity(intent);
+    }
+    private void onSignInButtonClicked(String email, String password){
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()){
+                    onAuthSuccessful();
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Invalid Mail or Password", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
+    private void onAuthSuccessful(){
+        reference.child(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()){
+                    User user = task.getResult().getValue(User.class);
+                    if (user == null){
+                        auth.signOut();
+                        return;
+                    }
+                    System.out.println(user.toString());
 
-    private void showAddFoodDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.add_food);
-
-        View view = getLayoutInflater().inflate(R.layout.edit_food_dialog, null);
-        builder.setView(view);
-
-        final EditText nameEditText = view.findViewById(R.id.name_edit_text);
-        final EditText priceEditText = view.findViewById(R.id.price_edit_text);
-
-        builder.setPositiveButton(R.string.save, (dialog, which) -> {
-            String name = nameEditText.getText().toString();
-            String priceText = priceEditText.getText().toString();
-
-            if (name.isEmpty() || priceText.isEmpty()) {
-                return;
+                    if (user.getUserType() == UserType.Owner){
+                        startActivity(new Intent(MainActivity.this, OwnerActivity.class));
+                    }
+                }
             }
-
-            double price = Double.parseDouble(priceText);
-            String key = foodReference.push().getKey();
-            FoodItem meal = new FoodItem(name, price, key);
-            foodReference.child(key).setValue(meal);
         });
-
-        builder.setNegativeButton(R.string.cancel, null);
-
-        builder.create().show();
     }
 
 }

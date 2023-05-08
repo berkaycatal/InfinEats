@@ -20,10 +20,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class FoodItemAdapter extends BaseAdapter {
@@ -127,14 +131,20 @@ public class FoodItemAdapter extends BaseAdapter {
                 if (name.isEmpty() || priceText.isEmpty()) {
                     return;
                 }
+                NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+                try {
+                    Number num = format.parse(priceText);
+                    double price = num.doubleValue();
+                    foodItem.setName(name);
+                    foodItem.setPrice(price);
 
-                double price = Double.parseDouble(priceText);
-                foodItem.setName(name);
-                foodItem.setPrice(price);
+                    Map<String,Object> values = foodItem.toMap();
 
-                Map<String,Object> values = foodItem.toMap();
+                    reference.child(foodItem.getKey()).updateChildren(values);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
 
-                reference.child(foodItem.getKey()).updateChildren(values);
             }
         });
 
@@ -142,6 +152,7 @@ public class FoodItemAdapter extends BaseAdapter {
 
         builder.create().show();
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -149,7 +160,6 @@ public class FoodItemAdapter extends BaseAdapter {
         }
 
         FoodItem foodItem = foodItemList.get(position);
-
         TextView tvFoodName = convertView.findViewById(R.id.tv_food_name);
         TextView tvFoodPrice = convertView.findViewById(R.id.tv_food_price);
         Button btnDelete = convertView.findViewById(R.id.btn_delete);
