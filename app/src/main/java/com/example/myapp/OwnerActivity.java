@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,10 +17,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.time.LocalDate;
-
 public class OwnerActivity extends AppCompatActivity {
-    private FoodItemAdapter foodAdapter;
+    private OwnerFoodItemAdapter foodAdapter;
     private DatabaseReference foodReference;
 
     @Override
@@ -29,14 +26,14 @@ public class OwnerActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String userId = auth.getCurrentUser().getUid();
-        foodReference = database.getReference("food").child(userId);
-
+        foodReference = database.getReference("restaurants").child(userId).child("foodItems");
+        //Restaurant restaurant = new Restaurant(userId, foodAdapter.getFoodItems());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner);
 
-        ListView listView = findViewById(R.id.list_view);
+        ListView listView = findViewById(R.id.list_comment);
 
-        foodAdapter = new FoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
+        foodAdapter = new OwnerFoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
         listView.setAdapter(foodAdapter);
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +62,7 @@ public class OwnerActivity extends AppCompatActivity {
 
     private void showAddFoodDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.add_food);
+        builder.setTitle(R.string.add);
 
         View view = getLayoutInflater().inflate(R.layout.edit_food_dialog, null);
         builder.setView(view);
@@ -83,7 +80,10 @@ public class OwnerActivity extends AppCompatActivity {
 
             double price = Double.parseDouble(priceText);
             String key = foodReference.push().getKey();
-            FoodItem meal = new FoodItem(name, price, key);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String userId = auth.getCurrentUser().getUid();
+            FoodItem meal = new FoodItem(name, price, key, userId);
             foodReference.child(key).setValue(meal);
         });
 

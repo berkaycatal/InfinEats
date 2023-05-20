@@ -14,10 +14,12 @@
         android:text="@string/log_out" />
 
     <Button
-        android:id="@+id/add_button"
+        android:id="@+id/my_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add" />
+        android:text="@string/my_profile"
+        android:translationX="280dp"
+        android:translationY="-50dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/food_recycler_view"
@@ -27,10 +29,12 @@
         android:clipToPadding="false"
         android:padding="8dp"
         android:scrollbars="vertical" />
+
     <ListView
         android:id="@+id/list_comment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="650dp"
+        android:translationY="-40dp" />
 
 
 </LinearLayout>

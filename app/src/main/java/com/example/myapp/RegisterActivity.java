@@ -21,6 +21,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText firstNameEditText, lastNameEditText, emailEditText, usernameEditText, passwordEditText, confirmPasswordEditText;
@@ -29,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private DatabaseReference mRef;
+
+    private DatabaseReference restaurantReference;
 
 
     @Override
@@ -40,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         mRef = FirebaseDatabase.getInstance().getReference("users");
+
+        restaurantReference =  FirebaseDatabase.getInstance().getReference("restaurants");
 
         // Initialize views
         firstNameEditText = findViewById(R.id.first_name_edit_text);
@@ -102,8 +109,11 @@ public class RegisterActivity extends AppCompatActivity {
                             UserType type = (UserType) getIntent().getSerializableExtra("userType");
                             User user = new User(type, userId, firstName, lastName, email, username);
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-
-
+                            if (user.getUserType() == UserType.Owner) {
+                                System.out.println("See");
+                                Restaurant restaurant = new Restaurant(firstName, userId, new ArrayList<>());
+                                restaurantReference.child(userId).setValue(restaurant);
+                            }
                             reference.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -142,9 +152,11 @@ public class RegisterActivity extends AppCompatActivity {
                     if (user.getUserType() == UserType.Owner){
                         startActivity(new Intent(RegisterActivity.this, OwnerActivity.class));
                     }
+                    else if (user.getUserType() == UserType.Customer){
+                        startActivity(new Intent(RegisterActivity.this, CustomerActivity.class));
+                    }
                 }
             }
         });
     }
 }
-

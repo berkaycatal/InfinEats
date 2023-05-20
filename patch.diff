@@ -1,0 +1,897 @@
+From 9628031278ab94ca29f10e586faab322ab067764 Mon Sep 17 00:00:00 2001
+From: Berkay <brkyctl19@gmail.com>
+Date: Mon, 8 May 2023 19:07:46 +0300
+Subject: [PATCH] new commit
+
+---
+ .idea/deploymentTargetDropDown.xml            |  17 ++
+ .idea/render.experimental.xml                 |   6 +
+ .idea/vcs.xml                                 |   6 +
+ app/src/main/AndroidManifest.xml              |   8 +
+ .../com/example/myapp/FoodItemAdapter.java    |  26 ++-
+ .../java/com/example/myapp/MainActivity.java  | 108 ++++++++-----
+ .../java/com/example/myapp/OwnerActivity.java | 100 ++++++++++++
+ .../com/example/myapp/RegisterActivity.java   | 150 ++++++++++++++++++
+ .../com/example/myapp/SignInActivity.java     |  12 ++
+ app/src/main/java/com/example/myapp/User.java |  73 ++++++++-
+ .../main/java/com/example/myapp/UserType.java |   6 +
+ app/src/main/res/layout/activity_main.xml     |  70 +++++---
+ app/src/main/res/layout/activity_owner.xml    |  37 +++++
+ app/src/main/res/layout/sign_up.xml           |  57 +++++++
+ app/src/main/res/values/strings.xml           |   2 +-
+ 15 files changed, 609 insertions(+), 69 deletions(-)
+ create mode 100644 .idea/deploymentTargetDropDown.xml
+ create mode 100644 .idea/render.experimental.xml
+ create mode 100644 .idea/vcs.xml
+ create mode 100644 app/src/main/java/com/example/myapp/OwnerActivity.java
+ create mode 100644 app/src/main/java/com/example/myapp/RegisterActivity.java
+ create mode 100644 app/src/main/java/com/example/myapp/SignInActivity.java
+ create mode 100644 app/src/main/java/com/example/myapp/UserType.java
+ create mode 100644 app/src/main/res/layout/activity_owner.xml
+ create mode 100644 app/src/main/res/layout/sign_up.xml
+
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+new file mode 100644
+index 0000000..14829bc
+--- /dev/null
++++ b/.idea/deploymentTargetDropDown.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="deploymentTargetDropDown">
++    <targetSelectedWithDropDown>
++      <Target>
++        <type value="QUICK_BOOT_TARGET" />
++        <deviceKey>
++          <Key>
++            <type value="VIRTUAL_DEVICE_PATH" />
++            <value value="C:\Users\Lenovo\.android\avd\Pixel_XL_API_30.avd" />
++          </Key>
++        </deviceKey>
++      </Target>
++    </targetSelectedWithDropDown>
++    <timeTargetWasSelectedWithDropDown value="2023-05-08T11:36:57.328204700Z" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/render.experimental.xml b/.idea/render.experimental.xml
+new file mode 100644
+index 0000000..8ec256a
+--- /dev/null
++++ b/.idea/render.experimental.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RenderSettings">
++    <option name="showDecorations" value="true" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+index 0000000..94a25f7
+--- /dev/null
++++ b/.idea/vcs.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 8425910..a8fc9b3 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@ -20,6 +20,14 @@
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+         </activity>
++        <activity
++            android:name=".RegisterActivity"
++            android:exported="true">
++        </activity>
++        <activity
++            android:name=".OwnerActivity"
++            android:exported="true">
++        </activity>
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/myapp/FoodItemAdapter.java b/app/src/main/java/com/example/myapp/FoodItemAdapter.java
+index fe0de60..2c9d067 100644
+--- a/app/src/main/java/com/example/myapp/FoodItemAdapter.java
++++ b/app/src/main/java/com/example/myapp/FoodItemAdapter.java
+@@ -20,10 +20,14 @@ import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseError;
+ import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
++import com.google.firebase.database.ServerValue;
+ 
++import java.text.NumberFormat;
++import java.text.ParseException;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.List;
++import java.util.Locale;
+ import java.util.Map;
+ 
+ public class FoodItemAdapter extends BaseAdapter {
+@@ -127,14 +131,20 @@ public class FoodItemAdapter extends BaseAdapter {
+                 if (name.isEmpty() || priceText.isEmpty()) {
+                     return;
+                 }
++                NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
++                try {
++                    Number num = format.parse(priceText);
++                    double price = num.doubleValue();
++                    foodItem.setName(name);
++                    foodItem.setPrice(price);
++
++                    Map<String,Object> values = foodItem.toMap();
++
++                    reference.child(foodItem.getKey()).updateChildren(values);
++                } catch (ParseException e) {
++                    throw new RuntimeException(e);
++                }
+ 
+-                double price = Double.parseDouble(priceText);
+-                foodItem.setName(name);
+-                foodItem.setPrice(price);
+-
+-                Map<String,Object> values = foodItem.toMap();
+-
+-                reference.child(foodItem.getKey()).updateChildren(values);
+             }
+         });
+ 
+@@ -142,6 +152,7 @@ public class FoodItemAdapter extends BaseAdapter {
+ 
+         builder.create().show();
+     }
++
+     @Override
+     public View getView(int position, View convertView, ViewGroup parent) {
+         if (convertView == null) {
+@@ -149,7 +160,6 @@ public class FoodItemAdapter extends BaseAdapter {
+         }
+ 
+         FoodItem foodItem = foodItemList.get(position);
+-
+         TextView tvFoodName = convertView.findViewById(R.id.tv_food_name);
+         TextView tvFoodPrice = convertView.findViewById(R.id.tv_food_price);
+         Button btnDelete = convertView.findViewById(R.id.btn_delete);
+diff --git a/app/src/main/java/com/example/myapp/MainActivity.java b/app/src/main/java/com/example/myapp/MainActivity.java
+index a53ea05..53d670c 100644
+--- a/app/src/main/java/com/example/myapp/MainActivity.java
++++ b/app/src/main/java/com/example/myapp/MainActivity.java
+@@ -1,65 +1,101 @@
+ package com.example.myapp;
++
++import android.app.Activity;
++import android.content.Intent;
+ import android.os.Bundle;
+ import android.view.View;
++import android.widget.Button;
+ import android.widget.EditText;
+-import android.widget.ListView;
+-import androidx.appcompat.app.AlertDialog;
++import android.widget.Toast;
++
++import androidx.annotation.NonNull;
+ import androidx.appcompat.app.AppCompatActivity;
+ 
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
++import com.google.firebase.auth.AuthResult;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.database.DataSnapshot;
+ import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
++
+ public class MainActivity extends AppCompatActivity {
+-    private FoodItemAdapter foodAdapter;
+-    private DatabaseReference foodReference;
++    private FirebaseAuth auth;
+ 
+-    @Override
++    private DatabaseReference reference;
+     protected void onCreate(Bundle savedInstanceState) {
+-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+-        foodReference = database.getReference("food").child("berkay");
+-
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_main);
+-
+-        ListView listView = findViewById(R.id.list_view);
+-
+-        foodAdapter = new FoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
+-        listView.setAdapter(foodAdapter);
+-        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
++        auth = FirebaseAuth.getInstance();
++        reference = FirebaseDatabase.getInstance().getReference("users");
++        if(auth.getCurrentUser() != null){
++            onAuthSuccessful();
++        }
++        ;
++        findViewById(R.id.customer_sign_up_button).setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                showAddFoodDialog();
++                onSignUpButtonClicked(UserType.Customer);
+             }
+         });
+ 
+-    }
++        findViewById(R.id.owner_sign_up_button).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                onSignUpButtonClicked(UserType.Owner);
+ 
+-    private void showAddFoodDialog() {
+-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+-        builder.setTitle(R.string.add_food);
++            }
++        });
++        EditText email = findViewById(R.id.email_edit_text);
++        EditText password = findViewById(R.id.password_edit_text);
+ 
+-        View view = getLayoutInflater().inflate(R.layout.edit_food_dialog, null);
+-        builder.setView(view);
++        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                onSignInButtonClicked(email.getText().toString(),password.getText().toString());
++            }
+ 
+-        final EditText nameEditText = view.findViewById(R.id.name_edit_text);
+-        final EditText priceEditText = view.findViewById(R.id.price_edit_text);
++        });
+ 
+-        builder.setPositiveButton(R.string.save, (dialog, which) -> {
+-            String name = nameEditText.getText().toString();
+-            String priceText = priceEditText.getText().toString();
+ 
+-            if (name.isEmpty() || priceText.isEmpty()) {
+-                return;
++    }
++    private void onSignUpButtonClicked(UserType type){
++        Intent intent = new Intent(this, RegisterActivity.class);
++        intent.putExtra("userType", type);
++        startActivity(intent);
++    }
++    private void onSignInButtonClicked(String email, String password){
++        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
++            @Override
++            public void onComplete(@NonNull Task<AuthResult> task) {
++                if (task.isSuccessful()){
++                    onAuthSuccessful();
++                }
++                else{
++                    Toast.makeText(MainActivity.this, "Invalid Mail or Password", Toast.LENGTH_SHORT).show();
++                }
+             }
+-
+-            double price = Double.parseDouble(priceText);
+-            String key = foodReference.push().getKey();
+-            FoodItem meal = new FoodItem(name, price, key);
+-            foodReference.child(key).setValue(meal);
+         });
+ 
+-        builder.setNegativeButton(R.string.cancel, null);
++    }
++    private void onAuthSuccessful(){
++        reference.child(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
++            @Override
++            public void onComplete(@NonNull Task<DataSnapshot> task) {
++                if (task.isSuccessful()){
++                    User user = task.getResult().getValue(User.class);
++                    if (user == null){
++                        auth.signOut();
++                        return;
++                    }
++                    System.out.println(user.toString());
+ 
+-        builder.create().show();
++                    if (user.getUserType() == UserType.Owner){
++                        startActivity(new Intent(MainActivity.this, OwnerActivity.class));
++                    }
++                }
++            }
++        });
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/app/src/main/java/com/example/myapp/OwnerActivity.java b/app/src/main/java/com/example/myapp/OwnerActivity.java
+new file mode 100644
+index 0000000..4a04f12
+--- /dev/null
++++ b/app/src/main/java/com/example/myapp/OwnerActivity.java
+@@ -0,0 +1,100 @@
++package com.example.myapp;
++
++import android.content.Intent;
++import android.os.Bundle;
++import android.view.View;
++import android.widget.EditText;
++import android.widget.ListView;
++import android.widget.TextView;
++
++import androidx.annotation.NonNull;
++import androidx.appcompat.app.AlertDialog;
++import androidx.appcompat.app.AppCompatActivity;
++
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.database.DataSnapshot;
++import com.google.firebase.database.DatabaseReference;
++import com.google.firebase.database.FirebaseDatabase;
++
++import java.time.LocalDate;
++
++public class OwnerActivity extends AppCompatActivity {
++    private FoodItemAdapter foodAdapter;
++    private DatabaseReference foodReference;
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        FirebaseDatabase database = FirebaseDatabase.getInstance();
++        FirebaseAuth auth = FirebaseAuth.getInstance();
++        String userId = auth.getCurrentUser().getUid();
++        foodReference = database.getReference("food").child(userId);
++
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_owner);
++
++        ListView listView = findViewById(R.id.list_view);
++
++        foodAdapter = new FoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
++        listView.setAdapter(foodAdapter);
++        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                showAddFoodDialog();
++            }
++        });
++        findViewById(R.id.log_out_button).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                onSignOutButtonClicked();
++            }
++        });
++        database.getReference("users").child(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
++            @Override
++            public void onComplete(@NonNull Task<DataSnapshot> task) {
++                if (task.isSuccessful()){
++                    User user = task.getResult().getValue(User.class);
++                    //TextView view = findViewById(R.id.created_at);
++                    //view.setText(User.getCreatedLocalDate(user).toString());
++                }
++            }
++        });
++
++    }
++
++    private void showAddFoodDialog() {
++        AlertDialog.Builder builder = new AlertDialog.Builder(this);
++        builder.setTitle(R.string.add_food);
++
++        View view = getLayoutInflater().inflate(R.layout.edit_food_dialog, null);
++        builder.setView(view);
++
++        final EditText nameEditText = view.findViewById(R.id.name_edit_text);
++        final EditText priceEditText = view.findViewById(R.id.price_edit_text);
++
++        builder.setPositiveButton(R.string.save, (dialog, which) -> {
++            String name = nameEditText.getText().toString();
++            String priceText = priceEditText.getText().toString();
++
++            if (name.isEmpty() || priceText.isEmpty()) {
++                return;
++            }
++
++            double price = Double.parseDouble(priceText);
++            String key = foodReference.push().getKey();
++            FoodItem meal = new FoodItem(name, price, key);
++            foodReference.child(key).setValue(meal);
++        });
++
++        builder.setNegativeButton(R.string.cancel, null);
++
++        builder.create().show();
++    }
++    private void onSignOutButtonClicked(){
++        FirebaseAuth auth = FirebaseAuth.getInstance();
++        auth.signOut();
++        startActivity(new Intent(this, MainActivity.class));
++    }
++
++}
+\ No newline at end of file
+diff --git a/app/src/main/java/com/example/myapp/RegisterActivity.java b/app/src/main/java/com/example/myapp/RegisterActivity.java
+new file mode 100644
+index 0000000..abfe4fc
+--- /dev/null
++++ b/app/src/main/java/com/example/myapp/RegisterActivity.java
+@@ -0,0 +1,150 @@
++package com.example.myapp;
++
++import android.content.Intent;
++import android.os.Bundle;
++
++import androidx.annotation.NonNull;
++import androidx.appcompat.app.AppCompatActivity;
++import android.text.TextUtils;
++import android.view.View;
++import android.widget.Button;
++import android.widget.CheckBox;
++import android.widget.EditText;
++import android.widget.Toast;
++
++import com.google.android.gms.tasks.OnCompleteListener;
++import com.google.android.gms.tasks.Task;
++import com.google.firebase.auth.AuthResult;
++import com.google.firebase.auth.FirebaseAuth;
++import com.google.firebase.database.DataSnapshot;
++import com.google.firebase.database.DatabaseReference;
++import com.google.firebase.database.FirebaseDatabase;
++import com.google.firebase.database.ServerValue;
++
++public class RegisterActivity extends AppCompatActivity {
++
++    private EditText firstNameEditText, lastNameEditText, emailEditText, usernameEditText, passwordEditText, confirmPasswordEditText;
++    private Button submitButton;
++
++    private FirebaseAuth mAuth;
++
++    private DatabaseReference mRef;
++
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.sign_up);
++
++        // Initialize Firebase authentication and database references
++        mAuth = FirebaseAuth.getInstance();
++
++        mRef = FirebaseDatabase.getInstance().getReference("users");
++
++        // Initialize views
++        firstNameEditText = findViewById(R.id.first_name_edit_text);
++        lastNameEditText = findViewById(R.id.last_name_edit_text);
++        emailEditText = findViewById(R.id.email_edit_text);
++        usernameEditText = findViewById(R.id.username_edit_text);
++        passwordEditText = findViewById(R.id.password_edit_text);
++        confirmPasswordEditText = findViewById(R.id.confirm_password_edit_text);
++        submitButton = findViewById(R.id.submit_button);
++
++        // Set OnClickListener for submit button
++        submitButton.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                // Get user input values
++                String firstName = firstNameEditText.getText().toString().trim();
++                String lastName = lastNameEditText.getText().toString().trim();
++                String email = emailEditText.getText().toString().trim();
++                String username = usernameEditText.getText().toString().trim();
++                String password = passwordEditText.getText().toString().trim();
++                String confirmPassword = confirmPasswordEditText.getText().toString().trim();
++
++                // Validate user input
++                if (TextUtils.isEmpty(firstName)) {
++                    firstNameEditText.setError("First name is required");
++                    return;
++                }
++                if (TextUtils.isEmpty(lastName)) {
++                    lastNameEditText.setError("Last name is required");
++                    return;
++                }
++                if (TextUtils.isEmpty(email)) {
++                    emailEditText.setError("Email is required");
++                    return;
++                }
++                if (TextUtils.isEmpty(username)) {
++                    usernameEditText.setError("Username is required");
++                    return;
++                }
++                if (TextUtils.isEmpty(password)) {
++                    passwordEditText.setError("Password is required");
++                    return;
++                }
++                if (TextUtils.isEmpty(confirmPassword)) {
++                    confirmPasswordEditText.setError("Confirm password is required");
++                    return;
++                }
++                if (!password.equals(confirmPassword)) {
++                    confirmPasswordEditText.setError("Passwords do not match");
++                    return;
++                }
++
++                // Create new user object
++
++                mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
++                    @Override
++                    public void onComplete(@NonNull Task<AuthResult> task) {
++                        if (task.isSuccessful()){
++                            String userId = task.getResult().getUser().getUid();
++                            UserType type = (UserType) getIntent().getSerializableExtra("userType");
++                            User user = new User(type, userId, firstName, lastName, email, username);
++                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
++
++
++                            reference.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
++                                @Override
++                                public void onComplete(@NonNull Task<Void> task) {
++                                    onAuthSuccessful();
++                                }
++
++                            });
++                            Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
++                        }
++                        else{
++                            Toast.makeText(RegisterActivity.this, "User is NOT registered", Toast.LENGTH_SHORT).show();
++                        }
++
++                    }
++                });
++                // Save user object to database
++
++
++                // Display success message
++
++            }
++        });
++    }
++    private void onAuthSuccessful(){
++        mRef.child(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
++            @Override
++            public void onComplete(@NonNull Task<DataSnapshot> task) {
++                if (task.isSuccessful()){
++                    User user = task.getResult().getValue(User.class);
++                    if (user == null){
++                        mAuth.signOut();
++                        return;
++                    }
++
++                    System.out.println(user.getUserType());
++                    if (user.getUserType() == UserType.Owner){
++                        startActivity(new Intent(RegisterActivity.this, OwnerActivity.class));
++                    }
++                }
++            }
++        });
++    }
++}
++
+diff --git a/app/src/main/java/com/example/myapp/SignInActivity.java b/app/src/main/java/com/example/myapp/SignInActivity.java
+new file mode 100644
+index 0000000..e5c48cd
+--- /dev/null
++++ b/app/src/main/java/com/example/myapp/SignInActivity.java
+@@ -0,0 +1,12 @@
++package com.example.myapp;
++
++import android.os.Bundle;
++
++import androidx.appcompat.app.AppCompatActivity;
++
++public class SignInActivity extends AppCompatActivity {
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.sign_up);
++    }
++}
+diff --git a/app/src/main/java/com/example/myapp/User.java b/app/src/main/java/com/example/myapp/User.java
+index 572f761..a582fa8 100644
+--- a/app/src/main/java/com/example/myapp/User.java
++++ b/app/src/main/java/com/example/myapp/User.java
+@@ -1,14 +1,75 @@
+ package com.example.myapp;
+ 
+-import com.google.firebase.database.IgnoreExtraProperties;
++import com.google.firebase.database.ServerValue;
++
++import java.text.DateFormat;
++import java.time.LocalDate;
++import java.util.Date;
++import java.util.Map;
+ 
+-@IgnoreExtraProperties
+ public class User {
+-    public String userName;
+-    public User(){
++    private String id;
++    private String firstName;
++    private String lastName;
++    private String email;
++    private String username;
++    private UserType userType;
++    private Map<String, String> createdAt;
++
++    public User() {
++        // Default constructor required for calls to DataSnapshot.getValue(User.class)
++    }
++
++    public User(UserType userType, String id, String firstName, String lastName, String email, String username) {
++        this.id = id;
++        this.firstName = firstName;
++        this.lastName = lastName;
++        this.email = email;
++        this.username = username;
++        this.userType = userType;
++        this.createdAt = ServerValue.TIMESTAMP;
++    }
++
++    public String getId() {
++        return id;
++    }
++
++    public String getFirstName() {
++        return firstName;
++    }
++
++    public String getLastName() {
++        return lastName;
++    }
++
++    public String getEmail() {
++        return email;
++    }
++
++    public String getUsername() {
++        return username;
++    }
++
++    public UserType getUserType() {
++        return userType;
++    }
++
++    public Map<String, String> getCreatedAt() {
++        return createdAt;
++    }
++
++    public void setCreatedAt(Long time) {
++
++    }
+ 
++    public static Date getCreatedLocalDate(User user){
++        System.out.println(user.createdAt);
++        return new Date();
+     }
+-    public User(String nam){
+-        userName = nam;
++
++    @Override
++    public String toString(){
++        return firstName + lastName + username + userType + email;
+     }
+ }
++
+diff --git a/app/src/main/java/com/example/myapp/UserType.java b/app/src/main/java/com/example/myapp/UserType.java
+new file mode 100644
+index 0000000..2ae54cb
+--- /dev/null
++++ b/app/src/main/java/com/example/myapp/UserType.java
+@@ -0,0 +1,6 @@
++package com.example.myapp;
++
++public enum UserType {
++    Customer,
++    Owner
++}
+diff --git a/app/src/main/res/layout/activity_main.xml b/app/src/main/res/layout/activity_main.xml
+index e406602..3bc6962 100644
+--- a/app/src/main/res/layout/activity_main.xml
++++ b/app/src/main/res/layout/activity_main.xml
+@@ -1,31 +1,65 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/relativeLayout"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:orientation="vertical"
+-    tools:context=".MainActivity">
++    android:gravity="center">
+ 
+ 
++    <EditText
++        android:id="@+id/email_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="196dp"
++        android:hint="Email"
++        android:inputType="textEmailAddress"
++        android:padding="16dp"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+-    <Button
+-        android:id="@+id/add_button"
+-        android:layout_width="wrap_content"
++    <EditText
++        android:id="@+id/password_edit_text"
++        android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+-        android:text="@string/add_food" />
++        android:layout_marginTop="28dp"
++        android:hint="Password"
++        android:inputType="textPassword"
++        android:padding="16dp"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/email_edit_text" />
+ 
+-    <androidx.recyclerview.widget.RecyclerView
+-        android:id="@+id/food_recycler_view"
++    <Button
++        android:id="@+id/sign_in_button"
+         android:layout_width="match_parent"
+-        android:layout_height="0dp"
+-        android:layout_weight="1"
+-        android:clipToPadding="false"
+-        android:padding="8dp"
+-        android:scrollbars="vertical" />
+-    <ListView
+-        android:id="@+id/list_view"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="20dp"
++        android:layout_marginEnd="4dp"
++        android:text="Customer Sign In"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/password_edit_text" />
++
++    <Button
++        android:id="@+id/customer_sign_up_button"
+         android:layout_width="match_parent"
+-        android:layout_height="match_parent" />
++        android:layout_height="wrap_content"
++        android:layout_marginBottom="8dp"
++        android:text="Customer Sign Up"
++        app:layout_constraintBottom_toTopOf="@+id/owner_sign_up_button"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
+ 
++    <Button
++        android:id="@+id/owner_sign_up_button"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="15dp"
++        android:layout_marginBottom="85dp"
++        android:text="Owner Sign Up"
++        app:layout_constraintBottom_toTopOf="@+id/email_edit_text"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/customer_sign_up_button" />
+ 
+-</LinearLayout>
++</androidx.constraintlayout.widget.ConstraintLayout>
+diff --git a/app/src/main/res/layout/activity_owner.xml b/app/src/main/res/layout/activity_owner.xml
+new file mode 100644
+index 0000000..6724f80
+--- /dev/null
++++ b/app/src/main/res/layout/activity_owner.xml
+@@ -0,0 +1,37 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:orientation="vertical"
++    tools:context=".MainActivity">
++
++
++    <Button
++        android:id="@+id/log_out_button"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="@string/log_out" />
++
++    <Button
++        android:id="@+id/add_button"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="@string/add_food" />
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/food_recycler_view"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_weight="1"
++        android:clipToPadding="false"
++        android:padding="8dp"
++        android:scrollbars="vertical" />
++    <ListView
++        android:id="@+id/list_view"
++        android:layout_width="match_parent"
++        android:layout_height="match_parent" />
++
++
++</LinearLayout>
++
+diff --git a/app/src/main/res/layout/sign_up.xml b/app/src/main/res/layout/sign_up.xml
+new file mode 100644
+index 0000000..bf48e0a
+--- /dev/null
++++ b/app/src/main/res/layout/sign_up.xml
+@@ -0,0 +1,57 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:orientation="vertical"
++    android:padding="16dp"
++    android:gravity="center">
++
++    <!-- EditTexts for personal info -->
++    <EditText
++        android:id="@+id/first_name_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="First name" />
++
++    <EditText
++        android:id="@+id/last_name_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="Last name" />
++
++    <EditText
++        android:id="@+id/email_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="Email"
++        android:inputType="textEmailAddress" />
++
++    <!-- EditTexts for account info -->
++    <EditText
++        android:id="@+id/username_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="Username" />
++
++    <EditText
++        android:id="@+id/password_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="Password"
++        android:inputType="textPassword" />
++
++    <EditText
++        android:id="@+id/confirm_password_edit_text"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:hint="Confirm password"
++        android:inputType="textPassword" />
++
++    <!-- CheckBox for newsletter preference -->
++    <Button
++        android:id="@+id/submit_button"
++        android:layout_width="match_parent"
++        android:layout_height="48dp"
++        android:text="Submit" />
++
++</LinearLayout>
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index 13c5cce..862ef3b 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -5,6 +5,6 @@
+     <string name="delete">Delete</string>
+     <string name="add_food">Add Food</string>
+     <string name="edit">Edit</string>
+-
++    <string name="log_out">Log Out</string>
+ 
+ </resources>
+\ No newline at end of file
+-- 
+2.32.0.windows.2
+

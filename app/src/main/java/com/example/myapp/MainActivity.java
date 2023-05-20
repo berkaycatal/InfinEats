@@ -91,7 +91,12 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(user.toString());
 
                     if (user.getUserType() == UserType.Owner){
-                        startActivity(new Intent(MainActivity.this, OwnerActivity.class));
+                        Intent intent = new Intent(MainActivity.this, OwnerActivity.class);
+                        startActivity(intent);
+                    }
+                    else if (user.getUserType() == UserType.Customer){
+                        Intent intent = new Intent(MainActivity.this, CustomerActivity.class);
+                        startActivity(intent);
                     }
                 }
             }

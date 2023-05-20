@@ -19,18 +19,14 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class FoodItemAdapter extends BaseAdapter {
+public class OwnerFoodItemAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<FoodItem> foodItemList;
@@ -39,7 +35,7 @@ public class FoodItemAdapter extends BaseAdapter {
 
 
 
-    public FoodItemAdapter(Context context, DatabaseReference reference) {
+    public OwnerFoodItemAdapter(Context context, DatabaseReference reference) {
         this.context = context;
         this.foodItemList = new ArrayList<FoodItem>();
         this.reference =reference;
@@ -103,7 +99,7 @@ public class FoodItemAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-    public List<FoodItem> getFoodItems(){return foodItemList;}
+    public ArrayList<FoodItem> getFoodItems(){return foodItemList;}
     private void onDeleteButtonClicked(FoodItem foodItem){
         System.out.println(foodItem);
         reference.child(foodItem.getKey()).removeValue();

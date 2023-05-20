@@ -12,14 +12,16 @@ public class FoodItem {
     private String name;
     private double price;
 
+    private String restaurantId;
 
     public FoodItem(){
 
     }
-    public FoodItem(String name, double price, String key) {
+    public FoodItem(String name, double price, String key, String restaurantId) {
         this.name = name;
         this.price = price;
         this.key = key;
+        this.restaurantId = restaurantId;
     }
 
     public String getName() {
@@ -33,6 +35,8 @@ public class FoodItem {
     public double getPrice() {
         return price;
     }
+
+    public String getRestaurantId(){return restaurantId;}
 
     public void setPrice(double price) {
         this.price = price;
