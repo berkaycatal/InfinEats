@@ -22,42 +22,11 @@ public class CustomerFoodItemAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<FoodItem> foodList;
-    private DatabaseReference reference;
 
-    public CustomerFoodItemAdapter(Context context, DatabaseReference reference) {
+    public CustomerFoodItemAdapter(Context context, ArrayList<FoodItem> foodList) {
         this.context = context;
-        this.foodList = new ArrayList<FoodItem>();
-        this.reference = reference;
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                FoodItem foodItem = snapshot.getValue(FoodItem.class);
-                foodList.add(foodItem);
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        this.foodList = foodList;
     }
-
     // Implement the BaseAdapter methods similarly to the FoodItemAdapter
 
     @Override

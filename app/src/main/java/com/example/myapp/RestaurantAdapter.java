@@ -27,38 +27,9 @@ public class RestaurantAdapter extends BaseAdapter {
     private DatabaseReference reference;
 
 
-    public RestaurantAdapter(Context context, DatabaseReference reference) {
+    public RestaurantAdapter(Context context, ArrayList<Restaurant> restaurantList) {
         this.context = context;
-        this.restaurantList = new ArrayList<Restaurant>();
-        this.reference = reference;
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Restaurant restaurant = snapshot.getValue(Restaurant.class);
-                restaurantList.add(restaurant);
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        this.restaurantList = restaurantList;
     }
 
     // Implement the BaseAdapter methods similarly to the FoodItemAdapter

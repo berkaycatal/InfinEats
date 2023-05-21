@@ -10,36 +10,43 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class RestaurantActivity extends AppCompatActivity {
-    private CustomerFoodItemAdapter foodAdapter;
-    private DatabaseReference restaurantReference;
+import java.util.ArrayList;
 
+public class RestaurantActivity extends AppCompatActivity {
+
+    private ListView listView;
+    private CustomerFoodItemAdapter foodAdapter;
+    private CustomerFoodItemController foodItemController;
     private String restaurantId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        restaurantId = getIntent().getStringExtra("restaurantId");
-        restaurantReference = database.getReference("restaurants").child(restaurantId).child("foodItems");;
         setContentView(R.layout.activity_restaurant);
-        ListView listView = findViewById(R.id.list_customer_food);
-            foodAdapter = new CustomerFoodItemAdapter(this, restaurantReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
-        listView.setAdapter(foodAdapter);
+        listView = findViewById(R.id.list_customer_food);
+        restaurantId = getIntent().getStringExtra("restaurantId");
+        foodItemController = new CustomerFoodItemController();
+
+        foodItemController.fetchFoodItems(restaurantId, new CustomerFoodItemController.OnFoodItemDataChangedListener() {
+            @Override
+            public void onFoodItemDataChanged(ArrayList<FoodItem> foodItems) {
+                foodAdapter = new CustomerFoodItemAdapter(RestaurantActivity.this, foodItems);
+                listView.setAdapter(foodAdapter);
+            }
+        });
+
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RestaurantActivity.this, CustomerActivity.class);
-                startActivity(intent);
-
+                startActivity(new Intent(RestaurantActivity.this, CustomerActivity.class));
+                finish();
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(RestaurantActivity.this, CustomerActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(RestaurantActivity.this, CustomerActivity.class));
         finish();
     }
 

@@ -26,27 +26,28 @@ import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private UserController userController;
+    private RestaurantController restaurantController;
+
     private EditText firstNameEditText, lastNameEditText, emailEditText, usernameEditText, passwordEditText, confirmPasswordEditText;
     private Button submitButton;
 
+
     private FirebaseAuth mAuth;
-
-    private DatabaseReference mRef;
-
-    private DatabaseReference restaurantReference;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up);
+        userController = new UserController();
+        restaurantController = new RestaurantController();
 
         // Initialize Firebase authentication and database references
         mAuth = FirebaseAuth.getInstance();
 
-        mRef = FirebaseDatabase.getInstance().getReference("users");
+        //mRef = FirebaseDatabase.getInstance().getReference("users");
 
-        restaurantReference =  FirebaseDatabase.getInstance().getReference("restaurants");
+        //restaurantReference =  FirebaseDatabase.getInstance().getReference("restaurants");
 
         // Initialize views
         firstNameEditText = findViewById(R.id.first_name_edit_text);
@@ -108,19 +109,18 @@ public class RegisterActivity extends AppCompatActivity {
                             String userId = task.getResult().getUser().getUid();
                             UserType type = (UserType) getIntent().getSerializableExtra("userType");
                             User user = new User(type, userId, firstName, lastName, email, username);
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+
                             if (user.getUserType() == UserType.Owner) {
-                                System.out.println("See");
                                 Restaurant restaurant = new Restaurant(firstName, userId, new ArrayList<>());
-                                restaurantReference.child(userId).setValue(restaurant);
+                                restaurantController.createRestaurant(restaurant);
                             }
-                            reference.child(userId).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            userController.createUser(user, new UserController.OnUserCreatedListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
+                                public void onUserCreated() {
                                     onAuthSuccessful();
                                 }
-
                             });
+
                             Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
                         }
                         else{
@@ -129,32 +129,23 @@ public class RegisterActivity extends AppCompatActivity {
 
                     }
                 });
-                // Save user object to database
-
-
-                // Display success message
-
             }
         });
     }
     private void onAuthSuccessful(){
-        mRef.child(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        userController.getCurrentUser(new UserController.OnGetUserListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()){
-                    User user = task.getResult().getValue(User.class);
-                    if (user == null){
-                        mAuth.signOut();
-                        return;
-                    }
+            public void onGetUser(User user) {
+                if (user == null){
+                    mAuth.signOut();
+                    return;
+                }
 
-                    System.out.println(user.getUserType());
-                    if (user.getUserType() == UserType.Owner){
-                        startActivity(new Intent(RegisterActivity.this, OwnerActivity.class));
-                    }
-                    else if (user.getUserType() == UserType.Customer){
-                        startActivity(new Intent(RegisterActivity.this, CustomerActivity.class));
-                    }
+                if (user.getUserType() == UserType.Owner){
+                    startActivity(new Intent(RegisterActivity.this, OwnerActivity.class));
+                }
+                else if (user.getUserType() == UserType.Customer){
+                    startActivity(new Intent(RegisterActivity.this, CustomerActivity.class));
                 }
             }
         });

@@ -30,59 +30,14 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<FoodItem> foodItemList;
-
-    private DatabaseReference reference;
-
+    private FoodItemController foodController;
 
 
-    public OwnerFoodItemAdapter(Context context, DatabaseReference reference) {
+
+    public OwnerFoodItemAdapter(Context context, FoodItemController foodController) {
         this.context = context;
         this.foodItemList = new ArrayList<FoodItem>();
-        this.reference =reference;
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                FoodItem meal = snapshot.getValue(FoodItem.class);
-                foodItemList.add(meal);
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String key = snapshot.getValue(FoodItem.class).getKey();
-                for (FoodItem meal: foodItemList){
-                    if (meal.getKey().equals(key)){
-                        int index = foodItemList.indexOf(meal);
-                        foodItemList.set(index, snapshot.getValue(FoodItem.class));
-
-                        break;
-                    }
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                String key = snapshot.getValue(FoodItem.class).getKey();
-                for (FoodItem meal: foodItemList){
-                    if (meal.getKey().equals(key)){
-                        foodItemList.remove(meal);
-                        break;
-                    }
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        this.foodController = foodController;
     }
 
     @Override
@@ -100,10 +55,13 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
         return position;
     }
     public ArrayList<FoodItem> getFoodItems(){return foodItemList;}
-    private void onDeleteButtonClicked(FoodItem foodItem){
-        System.out.println(foodItem);
-        reference.child(foodItem.getKey()).removeValue();
+    public void setFoodItems(ArrayList<FoodItem> foodItems) {
+        this.foodItemList = foodItems;
+        notifyDataSetChanged();
+    }
 
+    private void onDeleteButtonClicked(FoodItem foodItem) {
+        foodController.deleteFoodItem(foodItem);
     }
     private void onEditButtonClicked(FoodItem foodItem){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -127,6 +85,7 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
                 if (name.isEmpty() || priceText.isEmpty()) {
                     return;
                 }
+
                 NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
                 try {
                     Number num = format.parse(priceText);
@@ -134,13 +93,10 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
                     foodItem.setName(name);
                     foodItem.setPrice(price);
 
-                    Map<String,Object> values = foodItem.toMap();
-
-                    reference.child(foodItem.getKey()).updateChildren(values);
+                    foodController.updateFoodItem(foodItem);
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
-
             }
         });
 

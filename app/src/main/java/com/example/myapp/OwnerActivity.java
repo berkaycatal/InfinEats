@@ -17,24 +17,30 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class OwnerActivity extends AppCompatActivity {
     private OwnerFoodItemAdapter foodAdapter;
-    private DatabaseReference foodReference;
+    private FoodItemController foodController;
+    private ListView listView;
+
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser().getUid();
-        foodReference = database.getReference("restaurants").child(userId).child("foodItems");
-        //Restaurant restaurant = new Restaurant(userId, foodAdapter.getFoodItems());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_owner);
 
-        ListView listView = findViewById(R.id.list_comment);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        userId = auth.getCurrentUser().getUid();
+        foodController = new FoodItemController(userId);
 
-        foodAdapter = new OwnerFoodItemAdapter(this, foodReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
+        listView = findViewById(R.id.list_comment);
+        foodAdapter = new OwnerFoodItemAdapter(this, foodController);
         listView.setAdapter(foodAdapter);
+        fetchFoodItems();
+
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +53,8 @@ public class OwnerActivity extends AppCompatActivity {
                 onSignOutButtonClicked();
             }
         });
-        database.getReference("users").child(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+        FirebaseDatabase.getInstance().getReference("users").child(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()){
@@ -57,9 +64,24 @@ public class OwnerActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+    private void fetchFoodItems() {
+        foodController.fetchFoodItems(new FoodItemController.DataStatus() {
+            @Override
+            public void dataLoaded(ArrayList<FoodItem> foodItems) {
+                foodAdapter.setFoodItems(foodItems);
+            }
 
+            @Override
+            public void dataIsInserted() {}
+
+            @Override
+            public void dataIsUpdated() {}
+
+            @Override
+            public void dataIsDeleted() {}
+        });
+    }
     private void showAddFoodDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.add);
@@ -79,13 +101,10 @@ public class OwnerActivity extends AppCompatActivity {
             }
 
             double price = Double.parseDouble(priceText);
-            String key = foodReference.push().getKey();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String userId = auth.getCurrentUser().getUid();
-            FoodItem meal = new FoodItem(name, price, key, userId);
-            foodReference.child(key).setValue(meal);
+            String key = foodController.getFoodReference().push().getKey();
+            foodController.addFoodItem(name, price, key, userId);
         });
+
 
         builder.setNegativeButton(R.string.cancel, null);
 
