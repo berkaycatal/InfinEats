@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -18,33 +19,41 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 public class CommentActivity extends AppCompatActivity {
-    private CommentAdapter reviewAdapter;
-    private DatabaseReference reviewReference;
+
+    private ListView listView;
+    private CommentAdapter commentAdapter;
+    private CommentController commentController;
+    private String restaurantId;
+    private String foodId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String userId = auth.getCurrentUser().getUid();
-        String foodId = getIntent().getStringExtra("foodId");
-        String restaurantId = getIntent().getStringExtra("restaurantId");
-
-        reviewReference = database.getReference("reviews").child(foodId);
-        //Restaurant restaurant = new Restaurant(userId, foodAdapter.getFoodItems());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
-        ListView listView = findViewById(R.id.list_comment);
+        listView = findViewById(R.id.list_comment);
+        restaurantId = getIntent().getStringExtra("restaurantId");
+        foodId = getIntent().getStringExtra("foodId");
 
-        reviewAdapter = new CommentAdapter(this, reviewReference); // passing MainActivity instance as the OnFoodItemEditClickListener parameter
-        listView.setAdapter(reviewAdapter);
+        commentController = new CommentController();
+
+        commentController.fetchComments(foodId, new CommentController.OnCommentDataChangedListener() {
+            @Override
+            public void onCommentDataChanged(ArrayList<Comment> comments) {
+                commentAdapter = new CommentAdapter(CommentActivity.this, comments);
+                listView.setAdapter(commentAdapter);
+            }
+        });
+
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(reviewReference.child(userId).get() != null){reviewReference.child(userId).setValue(null);}
-                showAddFoodDialog();
+                showAddCommentDialog();
             }
         });
+
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,7 +66,7 @@ public class CommentActivity extends AppCompatActivity {
         });
     }
 
-    private void showAddFoodDialog() {
+    private void showAddCommentDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.add);
 
@@ -74,13 +83,24 @@ public class CommentActivity extends AppCompatActivity {
             if (contentText.isEmpty() || ratingText.isEmpty()) {
                 return;
             }
+
             FirebaseAuth auth = FirebaseAuth.getInstance();
             String userId = auth.getCurrentUser().getUid();
             double rating = Double.parseDouble(ratingText);
-            String key = reviewReference.push().getKey();
-            String foodId = getIntent().getStringExtra("foodId");
             Comment comment = new Comment(userId, foodId, contentText, rating);
-            reviewReference.child(userId).setValue(comment);
+
+            // Use CommentController to save the comment.
+            commentController.addComment(comment, new CommentController.OnCommentAddedListener() {
+                @Override
+                public void onCommentAdded(boolean isSuccess) {
+                    if (isSuccess) {
+                        commentController.saveToRecents(restaurantId);
+                        Toast.makeText(CommentActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(CommentActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         });
 
         builder.setNegativeButton(R.string.cancel, null);
@@ -88,5 +108,5 @@ public class CommentActivity extends AppCompatActivity {
         builder.create().show();
     }
 
-
 }
+

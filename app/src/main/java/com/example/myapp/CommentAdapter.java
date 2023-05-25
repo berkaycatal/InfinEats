@@ -22,47 +22,10 @@ public class CommentAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<Comment> commentList;
-    private DatabaseReference reference;
 
-    public CommentAdapter(Context context, DatabaseReference reference) {
+    public CommentAdapter(Context context, ArrayList<Comment> commentList) {
         this.context = context;
-        this.commentList = new ArrayList<>();
-        this.reference = reference;
-        reference.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Comment comment = snapshot.getValue(Comment.class);
-                commentList.add(comment);
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                Comment comment = snapshot.getValue(Comment.class);
-
-                for (Comment review: commentList){
-                    if (review.getUserId() == comment.getUserId()){
-                        commentList.remove(review);
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        this.commentList = commentList;
     }
 
     // Implement the BaseAdapter methods similarly to the FoodItemAdapter

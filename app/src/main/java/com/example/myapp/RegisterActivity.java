@@ -29,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     private UserController userController;
     private RestaurantController restaurantController;
 
+    private ProfileController profileController;
+
     private EditText firstNameEditText, lastNameEditText, emailEditText, usernameEditText, passwordEditText, confirmPasswordEditText;
     private Button submitButton;
 
@@ -41,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.sign_up);
         userController = new UserController();
         restaurantController = new RestaurantController();
+        profileController = new ProfileController(this);
 
         // Initialize Firebase authentication and database references
         mAuth = FirebaseAuth.getInstance();
@@ -113,6 +116,10 @@ public class RegisterActivity extends AppCompatActivity {
                             if (user.getUserType() == UserType.Owner) {
                                 Restaurant restaurant = new Restaurant(firstName, userId, new ArrayList<>());
                                 restaurantController.createRestaurant(restaurant);
+                            }
+                            if (user.getUserType() == UserType.Customer) {
+                                Profile profile = new Profile(firstName,lastName, userId, email);
+                                profileController.createProfile(profile);
                             }
                             userController.createUser(user, new UserController.OnUserCreatedListener() {
                                 @Override

@@ -11,30 +11,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 
 public class OwnerFoodItemAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<FoodItem> foodItemList;
-    private FoodItemController foodController;
+    private OwnerFoodItemController foodController;
 
 
 
-    public OwnerFoodItemAdapter(Context context, FoodItemController foodController) {
+    public OwnerFoodItemAdapter(Context context, OwnerFoodItemController foodController) {
         this.context = context;
         this.foodItemList = new ArrayList<FoodItem>();
         this.foodController = foodController;

@@ -7,10 +7,6 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
 
 public class CustomerActivity extends AppCompatActivity {
@@ -46,7 +42,10 @@ public class CustomerActivity extends AppCompatActivity {
         findViewById(R.id.my_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle the click event...
+                Intent intent = new Intent(CustomerActivity.this, MyProfileActivity.class);
+                startActivity(intent);
+
+                finish();
             }
         });
     }

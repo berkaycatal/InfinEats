@@ -9,5 +9,7 @@
     <string name="my_profile">My Profile</string>
     <string name="back">Back</string>
     <string name="review">Review</string>
+    <string name="go">Go</string>
+
 
 </resources>

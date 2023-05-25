@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".MyProfileActivity">
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_email"
+        android:text="Back"
+        android:translationY="-80dp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:translationY="50dp"
+        tools:text="Name: John Doe" />
+
+    <TextView
+        android:id="@+id/tv_surname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_name"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:translationY="50dp"
+        tools:text="Surname: Doe" />
+
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_surname"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:translationY="50dp"
+        tools:text="Email: johndoe@example.com" />
+
+    <Button
+        android:id="@+id/btn_edit_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_email"
+        android:text="Edit Profile"
+        android:translationY="50dp" />
+
+    <Button
+        android:id="@+id/btn_recently_visited"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_edit_profile"
+        android:text="Recently Visited"
+        android:translationY="160dp" />
+
+    <Button
+        android:id="@+id/btn_favorite_lists"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_recently_visited"
+        android:text="My Favorite Lists"
+        android:translationY="170dp" />
+
+</RelativeLayout>

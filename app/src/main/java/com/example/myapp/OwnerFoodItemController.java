@@ -1,7 +1,5 @@
 package com.example.myapp;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -13,11 +11,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class FoodItemController {
+public class OwnerFoodItemController {
     private DatabaseReference foodReference;
     private ArrayList<FoodItem> foodItemList;
 
-    public FoodItemController(String userId) {
+    public OwnerFoodItemController(String userId) {
         this.foodItemList = new ArrayList<>();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         this.foodReference = database.getReference("restaurants").child(userId).child("foodItems");

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/back" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/food_recycler_view"
         android:layout_width="match_parent"

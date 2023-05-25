@@ -18,9 +18,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class OwnerActivity extends AppCompatActivity {
-    private OwnerFoodItemAdapter foodAdapter;
-    private OwnerFoodItemController foodController;
+public class MyFavoriteListsActivity extends AppCompatActivity {
+    private MyFavoriteListAdapter favoriteAdapter;
+    private MyFavoriteListsController favoriteController;
     private ListView listView;
 
     private String userId;
@@ -29,27 +29,28 @@ public class OwnerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_owner);
+        setContentView(R.layout.activity_my_favorites);
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         userId = auth.getCurrentUser().getUid();
-        foodController = new OwnerFoodItemController(userId);
+        favoriteController = new MyFavoriteListsController();
 
-        listView = findViewById(R.id.list_comment);
-        foodAdapter = new OwnerFoodItemAdapter(this, foodController);
-        listView.setAdapter(foodAdapter);
+        listView = findViewById(R.id.list_favorites);
+        favoriteAdapter = new MyFavoriteListAdapter(this, favoriteController);
+        listView.setAdapter(favoriteAdapter);
         fetchFoodItems();
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddFoodDialog();
+                showAddFavoritesDialog();
             }
         });
-        findViewById(R.id.log_out_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSignOutButtonClicked();
+                Intent intent = new Intent(MyFavoriteListsActivity.this, MyProfileActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -65,10 +66,10 @@ public class OwnerActivity extends AppCompatActivity {
         });
     }
     private void fetchFoodItems() {
-        foodController.fetchFoodItems(new OwnerFoodItemController.DataStatus() {
+        favoriteController.fetchFoodItems(new MyFavoriteListsController.DataStatus() {
             @Override
-            public void dataLoaded(ArrayList<FoodItem> foodItems) {
-                foodAdapter.setFoodItems(foodItems);
+            public void dataLoaded(ArrayList<Favorites> favorites) {
+                favoriteAdapter.setFavoriteLists(favorites);
             }
 
             @Override
@@ -81,27 +82,28 @@ public class OwnerActivity extends AppCompatActivity {
             public void dataIsDeleted() {}
         });
     }
-    private void showAddFoodDialog() {
+    private void showAddFavoritesDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.add);
 
-        View view = getLayoutInflater().inflate(R.layout.edit_food_dialog, null);
+        View view = getLayoutInflater().inflate(R.layout.edit_lists_dialog, null);
         builder.setView(view);
 
         final EditText nameEditText = view.findViewById(R.id.name_edit_text);
-        final EditText priceEditText = view.findViewById(R.id.price_edit_text);
+
 
         builder.setPositiveButton(R.string.save, (dialog, which) -> {
             String name = nameEditText.getText().toString();
-            String priceText = priceEditText.getText().toString();
 
-            if (name.isEmpty() || priceText.isEmpty()) {
+            if (name.isEmpty()) {
                 return;
             }
-
-            double price = Double.parseDouble(priceText);
-            String key = foodController.getFoodReference().push().getKey();
-            foodController.addFoodItem(name, price, key, userId);
+            Restaurant restaurant = new Restaurant("Prototype", "0", new ArrayList<>());
+            ArrayList<Restaurant> restaurants = new ArrayList<Restaurant>();
+            restaurants.add(restaurant);
+            restaurants.remove(restaurant);
+            Favorites fav = new Favorites(name, restaurants);
+            favoriteController.addFavorites(fav);
         });
 
 
@@ -109,10 +111,6 @@ public class OwnerActivity extends AppCompatActivity {
 
         builder.create().show();
     }
-    private void onSignOutButtonClicked(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.signOut();
-        startActivity(new Intent(this, MainActivity.class));
-    }
+
 
 }
