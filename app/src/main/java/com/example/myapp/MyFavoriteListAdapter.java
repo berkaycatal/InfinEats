@@ -84,7 +84,7 @@ public class MyFavoriteListAdapter extends BaseAdapter {
         });
 
 
-        ;
+
         return convertView;
     }
 }

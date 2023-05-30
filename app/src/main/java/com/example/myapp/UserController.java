@@ -29,6 +29,7 @@ public class UserController {
                 }
                 else{
                     // Handle any errors
+                    System.out.println("task is not succesfull..: onComplete(..) in UserController > createUser");
                 }
             }
         });
@@ -48,6 +49,7 @@ public class UserController {
                 }
                 else{
                     // Handle any errors
+                    System.out.println("task is not succesfull..: onComplete(..) in UserController > getCurrentUser");
                 }
             }
         });

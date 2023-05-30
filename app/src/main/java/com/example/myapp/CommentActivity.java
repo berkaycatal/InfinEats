@@ -83,24 +83,27 @@ public class CommentActivity extends AppCompatActivity {
             if (contentText.isEmpty() || ratingText.isEmpty()) {
                 return;
             }
+            //in order not to get nullPointer exception
+            try {
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                String userId = auth.getCurrentUser().getUid();
+                double rating = Double.parseDouble(ratingText);
+                Comment comment = new Comment(userId, foodId, contentText, rating);
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String userId = auth.getCurrentUser().getUid();
-            double rating = Double.parseDouble(ratingText);
-            Comment comment = new Comment(userId, foodId, contentText, rating);
-
-            // Use CommentController to save the comment.
-            commentController.addComment(comment, new CommentController.OnCommentAddedListener() {
-                @Override
-                public void onCommentAdded(boolean isSuccess) {
-                    if (isSuccess) {
-                        commentController.saveToRecents(restaurantId);
-                        Toast.makeText(CommentActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(CommentActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                // Use CommentController to save the comment.
+                commentController.addComment(comment, new CommentController.OnCommentAddedListener() {
+                    @Override
+                    public void onCommentAdded(boolean isSuccess) {
+                        if (isSuccess) {
+                            commentController.saveToRecents(restaurantId);
+                            Toast.makeText(CommentActivity.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(CommentActivity.this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
+                });
+            }catch (Exception e){System.out.println("no user registered");}
+
         });
 
         builder.setNegativeButton(R.string.cancel, null);

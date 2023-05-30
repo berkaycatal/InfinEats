@@ -134,7 +134,7 @@ public class ProfileController {
             });
 
 
-            ;
+
             return convertView;
         }
 

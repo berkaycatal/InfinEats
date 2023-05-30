@@ -1,5 +1,7 @@
 package com.example.myapp;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.ServerValue;
 
 import java.text.DateFormat;
@@ -69,8 +71,8 @@ public class User {
         return new Date();
     }
 
-    @Override
-    public String toString(){
+    @Override //usage of non-null makes sure this method is not null
+    public @NonNull String toString(){
         return firstName + lastName + username + userType + email;
     }
 }

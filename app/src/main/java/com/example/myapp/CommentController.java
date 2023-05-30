@@ -29,7 +29,12 @@ public class CommentController {
         restaurantReference = FirebaseDatabase.getInstance().getReference("restaurants");
         commentReference = FirebaseDatabase.getInstance().getReference("reviews");
         auth = FirebaseAuth.getInstance();
-        visitedReference = FirebaseDatabase.getInstance().getReference("profiles").child(auth.getCurrentUser().getUid()).child("recentlyvisited");
+        //not to get nullpointer error caused by getUI()
+        try{
+            visitedReference = FirebaseDatabase.getInstance().getReference("profiles").child(auth.getCurrentUser().getUid()).child("recentlyvisited");
+        }
+        catch (Exception e){System.out.println("no user exists");}
+
     }
 
     public void fetchComments(String foodId, final OnCommentDataChangedListener listener) {
@@ -52,10 +57,16 @@ public class CommentController {
                 Comment comment = snapshot.getValue(Comment.class);
 
                 for (Comment review: commentList){
-                    if (review.getUserId() == comment.getUserId()){
-                        commentList.remove(review);
-                        break;
+                    if(review.getUserId() != null && comment.getUserId() != null) { //to prevent nullPointer error
+                        if (review.getUserId().equals(comment.getUserId())){ //== cannot be used for strings
+                            commentList.remove(review);
+                            break;
+                        }
                     }
+                    else{
+                        System.out.println("userID = null!!");
+                    }
+
                 }
             }
 

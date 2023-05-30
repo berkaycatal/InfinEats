@@ -63,7 +63,7 @@ public class MyProfileActivity extends AppCompatActivity {
                 }
             } else {
                 // Handle the error
-                // ...
+                System.out.println("task is not succesfull...");
             }
         });
 

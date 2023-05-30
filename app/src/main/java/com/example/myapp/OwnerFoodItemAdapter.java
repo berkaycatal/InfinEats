@@ -66,7 +66,8 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
         final EditText priceEditText = view.findViewById(R.id.price_edit_text);
 
         nameEditText.setText(foodItem.getName());
-        priceEditText.setText(String.format("%.2f", foodItem.getPrice()));
+        //using locale was suggested by android studio and chatGBT
+        priceEditText.setText(String.format(Locale.getDefault(),"%.2f", foodItem.getPrice()));
 
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
@@ -109,7 +110,8 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
         Button btnDelete = convertView.findViewById(R.id.btn_delete);
         Button btnEdit = convertView.findViewById(R.id.btn_edit);
         tvFoodName.setText(foodItem.getName());
-        tvFoodPrice.setText(String.format("%.2f", foodItem.getPrice()));
+        //locale is used
+        tvFoodPrice.setText(String.format(Locale.getDefault(),"%.2f", foodItem.getPrice()));
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +126,7 @@ public class OwnerFoodItemAdapter extends BaseAdapter {
             }
         });
 
-        ;
+
         return convertView;
     }
 
