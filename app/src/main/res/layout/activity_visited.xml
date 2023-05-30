@@ -27,7 +27,7 @@
         android:id="@+id/list_restaurant"
         android:layout_width="match_parent"
         android:layout_height="650dp"
-        android:translationY="-40dp" />
+        android:translationY="-4dp" />
 
 
 </LinearLayout>
