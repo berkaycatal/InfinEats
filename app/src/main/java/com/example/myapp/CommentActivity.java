@@ -91,7 +91,7 @@ public class CommentActivity extends AppCompatActivity {
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 String userId = auth.getCurrentUser().getUid();
                 double rating = Double.parseDouble(ratingText);
-                //keeps the rating below 10
+                //keeps the rating below 5
                 if (rating > 5){
                     Toast.makeText(CommentActivity.this,"Your rating is more than 5!", Toast.LENGTH_SHORT).show();
                     return;
