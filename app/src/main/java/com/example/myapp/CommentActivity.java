@@ -50,7 +50,10 @@ public class CommentActivity extends AppCompatActivity {
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddCommentDialog();
+
+                    showAddCommentDialog();
+
+
             }
         });
 
@@ -88,6 +91,11 @@ public class CommentActivity extends AppCompatActivity {
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 String userId = auth.getCurrentUser().getUid();
                 double rating = Double.parseDouble(ratingText);
+                //keeps the rating below 10
+                if (rating > 5){
+                    Toast.makeText(CommentActivity.this,"Your rating is more than 5!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Comment comment = new Comment(userId, foodId, contentText, rating);
 
                 // Use CommentController to save the comment.
