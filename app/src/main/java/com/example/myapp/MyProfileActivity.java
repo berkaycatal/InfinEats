@@ -60,6 +60,7 @@ public class MyProfileActivity extends AppCompatActivity {
                     tvName.setText(profile.getName());
                     tvSurname.setText(profile.getSurname());
                     tvEmail.setText(profile.getEmail());
+                    this.onStart();
                 }
             } else {
                 // Handle the error
