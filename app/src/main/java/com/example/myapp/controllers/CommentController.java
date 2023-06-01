@@ -35,7 +35,9 @@ public class CommentController {
         try{
             visitedReference = FirebaseDatabase.getInstance().getReference("profiles").child(auth.getCurrentUser().getUid()).child("recentlyvisited");
         }
-        catch (Exception e){System.out.println("no user exists");}
+        catch (Exception e){
+            System.out.println("no user exists");
+        }
 
     }
 
