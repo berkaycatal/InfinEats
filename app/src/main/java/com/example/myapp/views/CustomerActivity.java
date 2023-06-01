@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,10 @@ import android.view.View;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapp.R;
+import com.example.myapp.models.Restaurant;
+import com.example.myapp.controllers.RestaurantController;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.example.myapp.controllers.MyFavoriteListsController;
+import com.example.myapp.R;
+import com.example.myapp.models.Favorites;
 
 import java.util.ArrayList;
 

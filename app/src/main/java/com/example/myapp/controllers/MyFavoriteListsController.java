@@ -1,7 +1,8 @@
-package com.example.myapp;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 
+import com.example.myapp.models.Favorites;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,7 +11,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MyFavoriteListsController {
     private DatabaseReference favoritesReference;

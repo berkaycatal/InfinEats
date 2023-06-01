@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapp.controllers.MyProfileController;
+import com.example.myapp.models.Profile;
+import com.example.myapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MyProfileActivity extends AppCompatActivity {

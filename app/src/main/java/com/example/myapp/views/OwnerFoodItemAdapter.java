@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+
+import com.example.myapp.controllers.OwnerFoodItemController;
+import com.example.myapp.R;
+import com.example.myapp.models.FoodItem;
 
 import java.text.NumberFormat;
 import java.text.ParseException;

@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 
 import android.content.Context;
@@ -9,13 +9,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import com.example.myapp.models.FoodItem;
+import com.example.myapp.R;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
 public class CustomerFoodItemAdapter extends BaseAdapter {

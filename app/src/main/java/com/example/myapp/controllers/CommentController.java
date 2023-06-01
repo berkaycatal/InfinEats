@@ -1,8 +1,10 @@
-package com.example.myapp;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.myapp.models.Restaurant;
+import com.example.myapp.models.Comment;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;

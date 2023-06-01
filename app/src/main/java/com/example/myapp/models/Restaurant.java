@@ -1,4 +1,6 @@
-package com.example.myapp;
+package com.example.myapp.models;
+
+import com.example.myapp.models.FoodItem;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,8 +1,9 @@
-package com.example.myapp;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.myapp.models.FoodItem;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.controllers;
 
 // MyProfileController.java
 
@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
+import com.example.myapp.models.Profile;
+import com.example.myapp.R;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,21 +8,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.myapp.R;
+import com.example.myapp.models.Restaurant;
+import com.example.myapp.controllers.RestaurantController;
+import com.example.myapp.models.User;
+import com.example.myapp.controllers.UserController;
+import com.example.myapp.enums.UserType;
+import com.example.myapp.controllers.ProfileController;
+import com.example.myapp.models.Profile;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 

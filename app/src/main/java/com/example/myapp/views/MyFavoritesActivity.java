@@ -1,20 +1,16 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.myapp.R;
+import com.example.myapp.controllers.MyFavoriteController;
+import com.example.myapp.models.Favorites;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
 
 public class MyFavoritesActivity extends AppCompatActivity {
 
@@ -41,7 +37,7 @@ public class MyFavoritesActivity extends AppCompatActivity {
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(com.example.myapp.MyFavoritesActivity.this, MyFavoriteListsActivity.class);
+                Intent intent = new Intent(MyFavoritesActivity.this, MyFavoriteListsActivity.class);
                 startActivity(intent);
             }
         });
@@ -49,7 +45,7 @@ public class MyFavoritesActivity extends AppCompatActivity {
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(com.example.myapp.MyFavoritesActivity.this, AddRestaurantActivity.class);
+                Intent intent = new Intent(MyFavoritesActivity.this, AddRestaurantActivity.class);
                 intent.putExtra("listId", listName);
                 startActivity(intent);
             }

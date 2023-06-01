@@ -1,7 +1,8 @@
-package com.example.myapp;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 
+import com.example.myapp.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

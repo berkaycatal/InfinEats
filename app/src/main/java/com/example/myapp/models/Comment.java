@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.models;
 
 public class Comment {
     private String key;

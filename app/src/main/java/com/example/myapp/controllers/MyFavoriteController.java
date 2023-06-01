@@ -1,10 +1,10 @@
-package com.example.myapp;
-
-import android.content.Context;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapp.models.Restaurant;
+import com.example.myapp.models.Favorites;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,7 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class MyFavoriteController {
     private DatabaseReference favoriteReference;
@@ -50,7 +49,7 @@ public class MyFavoriteController {
         void dataIsDeleted();
     }
 
-    public void fetchRestaurants(final com.example.myapp.MyFavoriteController.DataStatus dataStatus) {
+    public void fetchRestaurants(final MyFavoriteController.DataStatus dataStatus) {
         favoriteList = new ArrayList<>();
         favoriteReference.addValueEventListener(new ValueEventListener() {
             @Override

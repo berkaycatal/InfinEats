@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapp.R;
+import com.example.myapp.models.Restaurant;
+import com.example.myapp.controllers.VisitedController;
 
 import java.util.ArrayList;
 
@@ -36,7 +40,7 @@ public class RecentlyVisitedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("içerdema");
-                Intent intent = new Intent(com.example.myapp.RecentlyVisitedActivity.this, MyProfileActivity.class);
+                Intent intent = new Intent(RecentlyVisitedActivity.this, MyProfileActivity.class);
                 startActivity(intent);
             }
         });

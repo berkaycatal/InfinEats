@@ -12,7 +12,7 @@
         android:theme="@style/Theme.Material3.DayNight"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".views.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,47 +21,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".views.RegisterActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".OwnerActivity"
+            android:name=".views.OwnerActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".CustomerActivity"
+            android:name=".views.CustomerActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".RestaurantActivity"
+            android:name=".views.RestaurantActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".CommentActivity"
+            android:name=".views.CommentActivity"
             android:exported="true">
         </activity>
         <activity
-            android:name=".MyProfileActivity"
-            android:exported="true">
-
-        </activity>
-        <activity
-            android:name=".RecentlyVisitedActivity"
+            android:name=".views.MyProfileActivity"
             android:exported="true">
 
         </activity>
         <activity
-            android:name=".MyFavoriteListsActivity"
+            android:name=".views.RecentlyVisitedActivity"
             android:exported="true">
 
         </activity>
         <activity
-            android:name=".MyFavoritesActivity"
+            android:name=".views.MyFavoriteListsActivity"
             android:exported="true">
 
         </activity>
         <activity
-            android:name=".AddRestaurantActivity"
+            android:name=".views.MyFavoritesActivity"
+            android:exported="true">
+
+        </activity>
+        <activity
+            android:name=".views.AddRestaurantActivity"
             android:exported="true">
 
         </activity>

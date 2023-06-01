@@ -1,11 +1,10 @@
-package com.example.myapp;
-
-import android.content.Context;
+package com.example.myapp.controllers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapp.models.Restaurant;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

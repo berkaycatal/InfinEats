@@ -1,11 +1,10 @@
-package com.example.myapp;
+package com.example.myapp.models;
 
 import androidx.annotation.NonNull;
 
+import com.example.myapp.enums.UserType;
 import com.google.firebase.database.ServerValue;
 
-import java.text.DateFormat;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Map;
 

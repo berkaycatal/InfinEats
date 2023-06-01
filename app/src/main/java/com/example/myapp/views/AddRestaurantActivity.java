@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.myapp.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapp.controllers.AddRestaurantController;
+import com.example.myapp.R;
+import com.example.myapp.models.Restaurant;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;

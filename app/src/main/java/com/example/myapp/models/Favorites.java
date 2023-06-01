@@ -1,6 +1,4 @@
-package com.example.myapp;
-
-import java.util.ArrayList;
+package com.example.myapp.models;
 
 import java.util.ArrayList;
 
