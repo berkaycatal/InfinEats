@@ -58,7 +58,7 @@ public class MyFavoriteController {
                 favoriteList.clear();
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     System.out.println("SnapshotValue");
-                    System.out.println(itemSnapshot.toString());
+                    System.out.println(itemSnapshot.getValue());
                     Restaurant restaurant = itemSnapshot.getValue(Restaurant.class);
                     favoriteList.add(restaurant);
                 }
