@@ -61,9 +61,6 @@ public class AddRestaurantController {
         });
     }
 
-    public void signOut() {
-        FirebaseAuth.getInstance().signOut();
-    }
 
     public interface OnRestaurantDataChangedListener {
         void onRestaurantDataChanged(ArrayList<Restaurant> restaurants);

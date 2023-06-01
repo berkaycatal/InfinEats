@@ -36,5 +36,7 @@ public class Favorites {
     public void setListName(String listName) {
         this.listName = listName;
     }
+
+
 }
 

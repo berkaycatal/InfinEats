@@ -31,7 +31,7 @@ public class MyFavoriteListsController {
         favoritesReference.child(favorites.getListName()).child("list").setValue(favorites.getFavoriteLists());
     }
 
-    public void updateFoodItem(FoodItem foodItem) {
+    public void updateFavorites(Favorites fav) {
 
     }
 
@@ -52,6 +52,8 @@ public class MyFavoriteListsController {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 favoriteLists.clear();
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                    System.out.println(itemSnapshot.getKey());
+                    System.out.println(itemSnapshot.getValue());
                     Favorites favorites = itemSnapshot.getValue(Favorites.class);
                     favoriteLists.add(favorites);
                 }
