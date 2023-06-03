@@ -15,7 +15,7 @@ public class MyProfileActivity extends AppCompatActivity {
 
     private MyProfileController profileController;
     private TextView tvName, tvSurname, tvEmail;
-    private Button btnEditProfile, btnRecentlyVisited, btnFavoriteLists, btnBack;
+    private Button btnEditProfile, btnRecentlyVisited, btnFavoriteLists, btnBack, btnMyFriends; //friends profile added
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,8 @@ public class MyProfileActivity extends AppCompatActivity {
         btnRecentlyVisited = findViewById(R.id.btn_recently_visited);
         btnFavoriteLists = findViewById(R.id.btn_favorite_lists);
         btnBack = findViewById(R.id.back_button);
+        btnMyFriends = findViewById(R.id.btn_my_friends);
+
 
 
         btnEditProfile.setOnClickListener(v -> {
