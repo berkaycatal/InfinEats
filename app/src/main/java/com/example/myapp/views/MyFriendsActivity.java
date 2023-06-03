@@ -56,6 +56,7 @@ public class MyFriendsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     private void fetchFriends() {

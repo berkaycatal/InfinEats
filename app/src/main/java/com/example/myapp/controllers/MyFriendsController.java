@@ -34,7 +34,9 @@ public class MyFriendsController {
         System.out.println(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         //not sure on path
-        friendsReference = FirebaseDatabase.getInstance().getReference("profiles").child(userId).child("userID").child(friendsName).child("list");
+        //friendsReference = FirebaseDatabase.getInstance().getReference("profiles").child(userId).child("userID").child(friendsName).child("list");
+        friendsReference = FirebaseDatabase.getInstance().getReference("profiles").child(userId).child(friendsName).child("list");
+
     }
 
     public void addFriend(User user) {

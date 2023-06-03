@@ -44,7 +44,7 @@ public class MyFriendListsActivity extends AppCompatActivity {
         findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyFriendListsActivity.this, MainActivity.class);
+                Intent intent = new Intent(MyFriendListsActivity.this, MyProfileActivity.class);
                 startActivity(intent);
             }
         });
