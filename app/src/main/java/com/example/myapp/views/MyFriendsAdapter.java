@@ -51,7 +51,9 @@ public class MyFriendsAdapter extends BaseAdapter {
     }
 
     private void onDeleteButtonClicked(User user) {
+
         friendsController.deleteFriend(user);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -68,8 +70,9 @@ public class MyFriendsAdapter extends BaseAdapter {
         convertView.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onDeleteButtonClicked(user);
-                friendsList.remove(user);
+                //in order to prevent crash
+                //onDeleteButtonClicked(user);
+                //friendsList.remove(user);
             }
         });
 
@@ -79,10 +82,13 @@ public class MyFriendsAdapter extends BaseAdapter {
                 //certainly not sure, it should be VisitorProfileActivity but I do not have that yet
                 Intent intent = new Intent(context, MyProfileActivity.class);
                 intent.putExtra("userId", user.getId());
-                context.startActivity(intent);
+
+                //in order to prevent crash
+                //context.startActivity(intent);
             }
         });
 
         return convertView;
     }
+
 }

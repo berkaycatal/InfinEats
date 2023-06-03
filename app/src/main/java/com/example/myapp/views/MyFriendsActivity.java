@@ -43,11 +43,11 @@ public class MyFriendsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Replace with the activity you want to navigate to on back button click
-                Intent intent = new Intent(MyFriendsActivity.this, MainActivity.class);
+                Intent intent = new Intent(MyFriendsActivity.this, MyFriendListsActivity.class);
                 startActivity(intent);
             }
         });
-
+    /*
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +56,7 @@ public class MyFriendsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+    */
     }
 
     private void fetchFriends() {

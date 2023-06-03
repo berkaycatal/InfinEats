@@ -53,7 +53,8 @@ public class AddFriendAdapter extends BaseAdapter {
         convertView.findViewById(R.id.btn_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                friendController.putFriend(friend);
+                //mute the btn to not crash
+                //friendController.putFriend(friend);
             }
         });
 

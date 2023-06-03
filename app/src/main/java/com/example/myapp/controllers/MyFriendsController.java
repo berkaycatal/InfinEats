@@ -39,10 +39,6 @@ public class MyFriendsController {
 
     }
 
-    public void addFriend(User user) {
-        //not sure on setValue
-        friendsReference.child(user.getId()).setValue(friends);
-    }
 
     public void deleteFriend(User user) {
         friendsReference.child(user.getId()).removeValue();
@@ -104,7 +100,8 @@ public class MyFriendsController {
             }
         });
     }
-
-
+    public void addFriend(User user) {
+        friendsReference.child(user.getId()).setValue(user);
+    }
 
 }
