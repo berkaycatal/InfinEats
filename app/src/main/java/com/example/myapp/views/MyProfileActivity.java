@@ -34,6 +34,11 @@ public class MyProfileActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.back_button);
         btnMyFriends = findViewById(R.id.btn_my_friends);
 
+        btnMyFriends.setOnClickListener(v -> {
+            Intent intent = new Intent(MyProfileActivity.this, MyFriendListsActivity.class);
+            startActivity(intent);
+        });
+
 
 
         btnEditProfile.setOnClickListener(v -> {
